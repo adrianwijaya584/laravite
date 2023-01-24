@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CatsController;
+use App\Http\Controllers\DogsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,3 +36,5 @@ Route::post('/cats', [CatsController::class, "store"]);
 Route::get('/cats/{id}', [CatsController::class, "show"]);
 Route::put('/cats/{id}/restore', [CatsController::class, "edit"]);
 Route::delete('/cats/{id}', [CatsController::class, "destroy"]);
+
+Route::resource("/dogs", DogsController::class);

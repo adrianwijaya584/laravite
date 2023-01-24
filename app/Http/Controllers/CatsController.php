@@ -10,11 +10,11 @@ use PHPOpenSourceSaver\JWTAuth\Contracts\Providers\Auth;
 class CatsController extends Controller 
 {
 	public function __construct() {
-		$this->middleware("auth:api");
+		$this->middleware("jwt.verify");
 	}
 
 	public function index(Request $request) {
-		$cats= Cats::select("id", "name", "race")->get();
+		$cats= Cats::withoutTrashed("id", "name", "race")->get();
 		return OK("", ["cats"=> $cats], 200);
 	}
 

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -26,23 +27,28 @@ class AuthController extends Controller
 					"errors"=> parseErrorMessage($validate->errors())
 				], 400);
 			}
+			
 			$credentials= $request->only("email", "password");
 	
 			$token= auth("api")->attempt($credentials);
-	
+
 			
 			if ($token) {
 				$user= auth("api")->user();
 
+				$roles= User::find($user->id)->getRoleNames();
+
 				return response()->json([
 					"token"=> $token,
 					"user"=> [
-						"name"=> $user->name
+						"name"=> $user->name,
+						"role"=> $roles,
 					]
 				]);
 			}
 		} catch (\Throwable $th) {
-			return response()->json(['error' => 'oops error'], 500);
+			error_log($th);
+			return response()->json(['error' => 'oops errors', $th], 500);
 		}
 
 	}
